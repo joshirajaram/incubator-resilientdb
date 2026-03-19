@@ -25,11 +25,15 @@ Docker image to provision and run ResilientDB along with supporting services (Gr
 
 ## Quick Start
 
-Build the Docker image:
+Build the Docker image (usually takes ~10 min the first time):
 
 ```bash
+cd ecosystem/deployment/ansible
 docker build -t resilientdb-ansible .
 ```
+
+If you cannot build the project successfully, try to reduce the bazel jobs [here](
+https://github.com/apache/incubator-resilientdb/tree/master/ecosystem/deployment/ansible/dockerfile#41).
 
 Run the container:
 

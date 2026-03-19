@@ -19,7 +19,7 @@
 FROM ubuntu:22.04
 
 # Let systemd know we're in a container
-ENV container docker
+ENV container=docker
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update apt and install required packages including systemd, ansible, etc.
@@ -38,7 +38,7 @@ COPY . /opt/resilientdb-ansible
 WORKDIR /opt/resilientdb-ansible
 
 # Run the ansible playbook non-interactively (passwordless sudo)
-RUN ansible-playbook site.yml -i inventories/production/hosts --tags all -e "bazel_jobs=1"
+RUN ansible-playbook site.yml -i inventories/production/hosts --tags all -e "bazel_jobs=4"
 
 # Copy the startup script and unit file into the container
 COPY startup.sh /opt/resilientdb-ansible/startup.sh

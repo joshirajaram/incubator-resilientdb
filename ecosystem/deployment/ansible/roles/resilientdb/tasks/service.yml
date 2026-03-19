@@ -28,7 +28,7 @@
 
 - name: Clone ResilientDB repository
   git:
-    repo: https://github.com/resilientdb/resilientdb.git
+    repo: https://github.com/apache/incubator-resilientdb.git
     dest: "{{ resilientdb_dir }}"
     version: master
     force: yes

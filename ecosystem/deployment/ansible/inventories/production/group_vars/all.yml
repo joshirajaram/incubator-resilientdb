@@ -21,8 +21,9 @@ components:
   - graphql
   - nginx
 
-resilientdb_dir: /opt/resilientdb
-graphql_dir: /opt/ResilientDB-GraphQL
+resilientdb_monorepo_dir: /opt/resilientdb
+resilientdb_dir: "{{ resilientdb_monorepo_dir }}"
+graphql_dir: "{{ resilientdb_monorepo_dir }}/ecosystem/graphql"
 crow_port: 18000
 graphql_port: 8000
 bazel_version: 6.0.0
