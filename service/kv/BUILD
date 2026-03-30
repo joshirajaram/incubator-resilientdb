@@ -34,7 +34,9 @@ cc_binary(
         "//service/utils:server_factory",
         "//common:comm",
         "//proto/kv:kv_cc_proto",
+        "//chain/storage:ipfs_storage",
         "//chain/storage:memory_db",
+        "//chain/storage:tiered_storage",
     ] + select({
         "//chain/storage/setting:enable_leveldb_setting": ["//chain/storage:leveldb"],
         "//conditions:default": [],

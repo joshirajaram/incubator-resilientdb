@@ -19,7 +19,12 @@
 
 #include <glog/logging.h>
 
+#include <chrono>
+#include <cstdlib>
+
+#include "chain/storage/ipfs_storage.h"
 #include "chain/storage/memory_db.h"
+#include "chain/storage/tiered_storage.h"
 #include "executor/kv/kv_executor.h"
 #include "platform/config/resdb_config_utils.h"
 #include "platform/statistic/stats.h"
@@ -40,12 +45,74 @@ void ShowUsage() {
   printf("<config> <private_key> <cert_file> [logging_dir]\n");
 }
 
+bool IsTieredStorageEnabled() {
+  const char* value = std::getenv("RESDB_TIERED_STORAGE");
+  if (value == nullptr) {
+    return false;
+  }
+  std::string flag(value);
+  return flag == "1" || flag == "true" || flag == "TRUE" || flag == "yes" ||
+         flag == "YES";
+}
+
+std::string GetIpfsBaseUrl() {
+  const char* value = std::getenv("RESDB_IPFS_URL");
+  if (value == nullptr) {
+    return "http://127.0.0.1:5001";
+  }
+  return std::string(value);
+}
+
+ResTierManagerConfig GetTierManagerConfig() {
+  ResTierManagerConfig config;
+  const char* threshold_value = std::getenv("RESDB_TIERED_HOT_THRESHOLD");
+  if (threshold_value != nullptr) {
+    char* endptr = nullptr;
+    uint64_t parsed = std::strtoull(threshold_value, &endptr, 10);
+    if (endptr != threshold_value) {
+      config.hot_block_threshold = parsed;
+    }
+  }
+
+  const char* batch_value = std::getenv("RESDB_TIERED_OFFLOAD_BATCH");
+  if (batch_value != nullptr) {
+    char* endptr = nullptr;
+    uint64_t parsed = std::strtoull(batch_value, &endptr, 10);
+    if (endptr != batch_value) {
+      config.offload_batch_size = parsed;
+    }
+  }
+
+  const char* poll_value = std::getenv("RESDB_TIERED_POLL_MS");
+  if (poll_value != nullptr) {
+    char* endptr = nullptr;
+    uint64_t parsed = std::strtoull(poll_value, &endptr, 10);
+    if (endptr != poll_value) {
+      config.poll_interval = std::chrono::milliseconds(parsed);
+    }
+  }
+
+  return config;
+}
+
 std::unique_ptr<Storage> NewStorage(const std::string& db_path,
                                     const ResConfigData& config_data) {
 #ifdef ENABLE_LEVELDB
+  if (IsTieredStorageEnabled()) {
+    LOG(INFO) << "use tiered leveldb storage.";
+    auto hot = NewResLevelDB(db_path, config_data.leveldb_info());
+    auto cold = NewIPFSStorage(GetIpfsBaseUrl());
+    return NewTieredStorage(std::move(hot), std::move(cold),
+                            GetTierManagerConfig());
+  }
   LOG(INFO) << "use leveldb storage.";
   return NewResLevelDB(db_path, config_data.leveldb_info());
 #endif
+  if (IsTieredStorageEnabled()) {
+    LOG(INFO) << "use tiered memory storage.";
+    return NewTieredStorage(NewMemoryDB(), NewIPFSStorage(GetIpfsBaseUrl()),
+                            GetTierManagerConfig());
+  }
   LOG(INFO) << "use memory storage.";
   return NewMemoryDB();
 }

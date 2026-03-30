@@ -44,6 +44,44 @@ cc_library(
 )
 
 cc_library(
+    name = "res_tier_manager",
+    srcs = ["res_tier_manager.cpp"],
+    hdrs = ["res_tier_manager.h"],
+    deps = [
+    ],
+)
+
+cc_library(
+    name = "tiered_storage",
+    srcs = ["tiered_storage.cpp"],
+    hdrs = ["tiered_storage.h"],
+    deps = [
+        ":res_tier_manager",
+        ":storage",
+    ],
+)
+
+cc_library(
+    name = "ipfs_sidecar_client",
+    srcs = ["ipfs_sidecar_client.cpp"],
+    hdrs = ["ipfs_sidecar_client.h"],
+    linkopts = ["-lcurl"],
+    deps = [
+    ],
+)
+
+cc_library(
+    name = "ipfs_storage",
+    srcs = ["ipfs_storage.cpp"],
+    hdrs = ["ipfs_storage.h"],
+    deps = [
+        ":ipfs_sidecar_client",
+        ":storage",
+        "//common:comm",
+    ],
+)
+
+cc_library(
     name = "leveldb",
     srcs = ["leveldb.cpp"],
     hdrs = ["leveldb.h"],
@@ -79,5 +117,18 @@ cc_test(
         ":leveldb",
         "//common/test:test_main",
         "//platform/statistic:stats",
+    ],
+)
+
+cc_test(
+    name = "res_tier_manager_test",
+    size = "small",
+    timeout = "short",
+    srcs = ["res_tier_manager_test.cpp"],
+    deps = [
+        ":memory_db",
+        ":res_tier_manager",
+        ":tiered_storage",
+        "//common/test:test_main",
     ],
 )
