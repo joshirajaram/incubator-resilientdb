@@ -1,0 +1,125 @@
+version: "3.8"
+
+services:
+  ipfs1:
+    image: ${IPFS_IMAGE:-ipfs/kubo:latest}
+    container_name: ipfs1
+    networks:
+      - resdb-net
+    ports:
+      - "${IPFS_HOST_PORT_BASE:-15000}1:5001"
+
+  ipfs2:
+    image: ${IPFS_IMAGE:-ipfs/kubo:latest}
+    container_name: ipfs2
+    networks:
+      - resdb-net
+    ports:
+      - "${IPFS_HOST_PORT_BASE:-15000}2:5001"
+
+  ipfs3:
+    image: ${IPFS_IMAGE:-ipfs/kubo:latest}
+    container_name: ipfs3
+    networks:
+      - resdb-net
+    ports:
+      - "${IPFS_HOST_PORT_BASE:-15000}3:5001"
+
+  ipfs4:
+    image: ${IPFS_IMAGE:-ipfs/kubo:latest}
+    container_name: ipfs4
+    networks:
+      - resdb-net
+    ports:
+      - "${IPFS_HOST_PORT_BASE:-15000}4:5001"
+
+  resdb1:
+    build:
+      context: ../..
+      dockerfile: Docker/Dockerfile
+    image: ${RESDB_IMAGE:-resilientdb:local}
+    container_name: resdb1
+    depends_on:
+      - ipfs1
+    networks:
+      - resdb-net
+    environment:
+      RESDB_TIERED_STORAGE: ${RESDB_TIERED_STORAGE:-1}
+      RESDB_TIERED_HOT_THRESHOLD: ${RESDB_TIERED_HOT_THRESHOLD:-100000}
+      RESDB_TIERED_OFFLOAD_BATCH: ${RESDB_TIERED_OFFLOAD_BATCH:-1000}
+      RESDB_TIERED_POLL_MS: ${RESDB_TIERED_POLL_MS:-1000}
+      RESDB_IPFS_URL: http://ipfs1:5001
+    volumes:
+      - ./docker/server.config:/config/server.config:ro
+      - ../service/tools/data/cert:/config:ro
+    command: >
+      bash -lc "bazel build //service/kv:kv_service &&
+      ./bazel-bin/service/kv/kv_service /config/server.config
+      /config/node1.key.pri /config/cert_1.cert"
+
+  resdb2:
+    image: ${RESDB_IMAGE:-resilientdb:local}
+    container_name: resdb2
+    depends_on:
+      - ipfs2
+    networks:
+      - resdb-net
+    environment:
+      RESDB_TIERED_STORAGE: ${RESDB_TIERED_STORAGE:-1}
+      RESDB_TIERED_HOT_THRESHOLD: ${RESDB_TIERED_HOT_THRESHOLD:-100000}
+      RESDB_TIERED_OFFLOAD_BATCH: ${RESDB_TIERED_OFFLOAD_BATCH:-1000}
+      RESDB_TIERED_POLL_MS: ${RESDB_TIERED_POLL_MS:-1000}
+      RESDB_IPFS_URL: http://ipfs2:5001
+    volumes:
+      - ./docker/server.config:/config/server.config:ro
+      - ../service/tools/data/cert:/config:ro
+    command: >
+      bash -lc "bazel build //service/kv:kv_service &&
+      ./bazel-bin/service/kv/kv_service /config/server.config
+      /config/node2.key.pri /config/cert_2.cert"
+
+  resdb3:
+    image: ${RESDB_IMAGE:-resilientdb:local}
+    container_name: resdb3
+    depends_on:
+      - ipfs3
+    networks:
+      - resdb-net
+    environment:
+      RESDB_TIERED_STORAGE: ${RESDB_TIERED_STORAGE:-1}
+      RESDB_TIERED_HOT_THRESHOLD: ${RESDB_TIERED_HOT_THRESHOLD:-100000}
+      RESDB_TIERED_OFFLOAD_BATCH: ${RESDB_TIERED_OFFLOAD_BATCH:-1000}
+      RESDB_TIERED_POLL_MS: ${RESDB_TIERED_POLL_MS:-1000}
+      RESDB_IPFS_URL: http://ipfs3:5001
+    volumes:
+      - ./docker/server.config:/config/server.config:ro
+      - ../service/tools/data/cert:/config:ro
+    command: >
+      bash -lc "bazel build //service/kv:kv_service &&
+      ./bazel-bin/service/kv/kv_service /config/server.config
+      /config/node3.key.pri /config/cert_3.cert"
+
+  resdb4:
+    image: ${RESDB_IMAGE:-resilientdb:local}
+    container_name: resdb4
+    depends_on:
+      - ipfs4
+    networks:
+      - resdb-net
+    environment:
+      RESDB_TIERED_STORAGE: ${RESDB_TIERED_STORAGE:-1}
+      RESDB_TIERED_HOT_THRESHOLD: ${RESDB_TIERED_HOT_THRESHOLD:-100000}
+      RESDB_TIERED_OFFLOAD_BATCH: ${RESDB_TIERED_OFFLOAD_BATCH:-1000}
+      RESDB_TIERED_POLL_MS: ${RESDB_TIERED_POLL_MS:-1000}
+      RESDB_IPFS_URL: http://ipfs4:5001
+    volumes:
+      - ./docker/server.config:/config/server.config:ro
+      - ../service/tools/data/cert:/config:ro
+    command: >
+      bash -lc "bazel build //service/kv:kv_service &&
+      ./bazel-bin/service/kv/kv_service /config/server.config
+      /config/node4.key.pri /config/cert_4.cert"
+
+networks:
+  resdb-net:
+    driver: bridge
