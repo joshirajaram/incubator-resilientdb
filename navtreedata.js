@@ -64,29 +64,29 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d0/ded/classresdb_1_1ConsensusManagerPBFT.html#accbe75d7be210c0357cde550d4947198",
-"d1/db2/classresdb_1_1ViewChangeManager.html#a458c26e26eb29aefd222f9d414799a48",
-"d3/d16/classResDBTxnAccessor.html#acad48a213c53f4477eb49c917ea16d2c",
-"d3/d97/classresilient__python__cache_1_1cache_1_1ResilientPythonCache.html#a2b0f57c15f255fc5ba00bb4be53adcfd",
-"d4/d4b/classKVServiceTransactionManager.html",
-"d5/d10/namespaceresdb.html#a9365b7af8267b084d545559cc0f87cb0a3279973d22efc152fd87dfe4f1710def",
-"d5/d57/classresdb_1_1contract_1_1MemoryDB.html#af1fb8cea5ed91abf154ce4fdb40f2a74",
-"d6/d84/namespaceutils.html",
-"d7/d95/classresdb_1_1TransactionCollector.html#a5204b67bb1f3c45644b998f88f6c9934",
-"d8/d6b/storage_8h_source.html",
-"d9/d68/classresdb__validator_1_1models_1_1Transaction.html",
-"da/d19/classresdb_1_1ConsensusManager.html#afddbd1de6fd7a2a629e593e879fc1b5e",
-"da/dcc/namespaceresdb__validator_1_1utils.html#a2ecf87921846e61a2a883d02e3395f24",
-"db/ddb/classresdb_1_1ResDBConfig.html#a3669f8ea7516a477902af0e357d47b84",
-"dc/d12/ecosystem_2graphql_2service_2kv__service_2kv__service__tools_8cpp.html#aae9011388f6fd7b287566f37e31660fa",
-"dc/db0/classresdb_1_1CheckPointManager.html#aceffced8931a5a2a9c6c4a517cfe489f",
-"dd/da8/namespaceadd__license__headers.html#a3fa65a16b4049a0018fbf3d1f1154a9b",
-"de/d46/classresdb_1_1BlockManager.html#a1e31337aabf7668a9fa5f874c74bd917",
-"de/dc3/classresdb_1_1NetChannel.html#aea266111b7b17de8da3c80de6fb38dd8",
-"df/dbe/classgraphql__client_1_1GraphQLClient.html#aab98ea24adeb718e8497ee832c32289c",
-"dir_d7cd2a92df2926f13a63ecd5966aa135.html"
+"d0/ded/classresdb_1_1ConsensusManagerPBFT.html#abc117418c5375d245e128db2b8dab58a",
+"d1/db2/classresdb_1_1ViewChangeManager.html#a4573a1cac52997a528c00ce4fbf3c8d6",
+"d2/dc4/namespaceresdb__driver_1_1driver__experiment.html#ae261520341e73d05bc24d079fa742ee9",
+"d3/d76/common_2transaction__utils_8cpp.html",
+"d4/d30/utxo__service_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627",
+"d5/d10/namespaceresdb.html#a20a9c64f3963cdec2d8dfcb221b6a223",
+"d5/d3e/classresdb_1_1LRUCache.html#a1886dafde65024014deea676a1a8904c",
+"d6/d29/classresdb_1_1common_1_1PerformanceManager.html#acf034ccebe89638b2b14658c64063234",
+"d7/d61/classresdb__driver_1_1validate_1_1Transaction.html",
+"d8/d22/classresdb_1_1ChainState.html#ae6d91051041bc70827fe74320ac0e3f4",
+"d9/d27/classresdb_1_1SystemInfo.html",
+"da/d19/classresdb_1_1ConsensusManager.html",
+"da/d86/classresdb_1_1ResDBPoCConfig.html#ad2260792dfda1c98e62e5ec63a6dce19",
+"db/d84/classknowledge__graph__builder_1_1KnowledgeGraphBuilder.html#a811d480485f598308b64d60d0ec209fa",
+"dc/d03/classresdb__driver_1_1connection_1_1Connection.html#a3615e44eaabf1451a1a6a529d11206ee",
+"dc/db0/classresdb_1_1CheckPointManager.html#a48db466b3df3b353c2378fc099524817",
+"dd/d4b/classresdb_1_1Commitment.html#af38e8574b68da0c20576d31ad60e5ef8",
+"de/d28/classresdb_1_1MockStorage.html#a3c245b499dad59270cf27fa29f16c1c2",
+"de/dc2/wallet__test_8cpp_source.html",
+"df/d98/checkpoint__manager_8cpp.html",
+"dir_72f548397cf5560b4e827548a93583d2.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronization';
-var SYNCOFFMSG = 'click to enable panel synchronization';
-var LISTOFALLMEMBERS = 'List of all members';
+const SYNCONMSG = 'click to disable panel synchronization';
+const SYNCOFFMSG = 'click to enable panel synchronization';
+const LISTOFALLMEMBERS = 'List of all members';
