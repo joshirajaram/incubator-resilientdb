@@ -50,6 +50,10 @@ class StubIPFSClient : public IPFSClient {
   bool Exists(const std::string& cid) override {
     return !cid.empty();
   }
+  bool Unpin(const std::string& cid) override {
+    (void)cid;
+    return true;
+  }
   bool IsEnabled() const override {
     return enabled_;
   }
@@ -148,7 +152,7 @@ TEST_F(TieredStorageTest, GetColdThreshold) {
   EXPECT_EQ(storage->GetColdThreshold(), 10);
 }
 
-TEST_F(TieredStorageTest, GetLastCheckpointFromWarm) {
+TEST_F(TieredStorageTest, GetLastCheckpointTracksMaxSeq) {
   TieredStorageConfig config;
   config.set_enabled(false);
 
@@ -159,8 +163,9 @@ TEST_F(TieredStorageTest, GetLastCheckpointFromWarm) {
   auto storage = std::make_unique<TieredStorage>(
       std::move(hot), std::move(warm), std::move(ipfs), config);
 
-  warm->SetValueWithSeq("key1", "value1", 100);
-  
+  storage->SetValueWithSeq("key1", "value1", 100);
+  storage->SetValueWithSeq("key2", "value2", 50);
+
   EXPECT_EQ(storage->GetLastCheckpoint(), 100);
 }
 
@@ -170,14 +175,16 @@ TEST_F(TieredStorageTest, GetValueWithSeq) {
 
   auto warm = NewResLevelDB(leveldb_path_);
   auto hot = NewMemoryDB();
+  auto* warm_ptr = warm.get();
+  auto* hot_ptr = hot.get();
   std::unique_ptr<IPFSClient> ipfs(new StubIPFSClient(false));
 
   auto storage = std::make_unique<TieredStorage>(
       std::move(hot), std::move(warm), std::move(ipfs), config);
 
-  hot->SetValueWithSeq("key1", "value1", 1);
-  warm->SetValueWithSeq("key2", "value2", 2);
-  
+  hot_ptr->SetValueWithSeq("key1", "value1", 1);
+  warm_ptr->SetValueWithSeq("key2", "value2", 2);
+
   auto result1 = storage->GetValueWithSeq("key1", 0);
   EXPECT_EQ(result1.first, "value1");
   EXPECT_EQ(result1.second, 1);
@@ -198,7 +205,7 @@ TEST_F(TieredStorageTest, SetValueWithVersion) {
   auto storage = std::make_unique<TieredStorage>(
       std::move(hot), std::move(warm), std::move(ipfs), config);
 
-  EXPECT_EQ(storage->SetValueWithVersion("key1", "value1", 1), 0);
+  EXPECT_EQ(storage->SetValueWithVersion("key1", "value1", 0), 0);
   
   auto result = storage->GetValueWithVersion("key1", 1);
   EXPECT_EQ(result.first, "value1");

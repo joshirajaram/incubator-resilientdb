@@ -80,11 +80,11 @@ class ResLevelDB : public Storage, public DeletableStorage {
 
   virtual uint64_t GetLastCheckpoint() override;
 
+  virtual int SetLastCheckpoint(uint64_t ckpt);
+
   bool DeleteKey(const std::string& key) override;
 
- protected:
-  int SetLastCheckpoint(uint64_t ckpt);
-  absl::Mutex& GetBatchMutex() { return batch_mutex_; }
+ private:
   void CreateDB(const std::string& path);
   uint64_t GetLastCheckpointInternal();
   void UpdateLastCkpt(uint64_t seq);
@@ -95,6 +95,8 @@ class ResLevelDB : public Storage, public DeletableStorage {
   absl::Mutex batch_mutex_;
   unsigned int write_buffer_size_ = 64 << 20;
   unsigned int write_batch_size_ = 1;
+
+ protected:
   Stats* global_stats_ = nullptr;
   std::unique_ptr<LRUCache<std::string, std::string>> block_cache_;
   uint64_t last_ckpt_;
